@@ -7,7 +7,12 @@ Exercises 	35%
 
 Each term has four exams, and several exercises. Every exam has a fixed maximum score of 100, while exercises have varied maximum score values and counts. The total maximum point value for all exercises in any term is always 100, regardless of how many exercises the students had to complete. For example, a term may have five exercises with possible score maximums of [30, 20, 10, 20, 20] while another term may have three exercises with possible score maximums of [20, 30, 50].
 
-To determine a student's grade, we first determine the student's average score from the four exams, then sum all the exercise scores. We then apply the weights to compute the student's final percent grade. Finally, we determine the letter equivalent grade from the student's percent grade we just computed.
+To determine a student's grade, we
+ - /first determine the student's average score from the four exams, 
+ - /then sum all the exercise scores.
+ -/ We then apply the weights to compute the student's final percent grade.
+ - /Finally, we determine the letter equivalent grade from the student's percent grade we just computed.
+
 Percent Grade 	Letter Equivalent
 93 - 100 	A
 85 - 92 	B
@@ -18,11 +23,11 @@ Percent Grade 	Letter Equivalent
 
 For example, let's assume a term with three exercises with maximum scores of [20, 30, 50]. A student got [90, 80, 95, 71] on her four exams, and [20, 15, 40] on her exercises. To determine her final grade, we follow these steps:
 
-    Compute the student's average exam score: (90 + 80 + 95 + 71) / 4 = 84
+    /Compute the student's average exam score: (90 + 80 + 95 + 71) / 4 = 84
     Compute the student's total exercise score: 20 + 15 + 40 = 75
-    Apply weights to determine the final percent grade: 84 * .65 + 75 * .35 = 80.85
+    /Apply weights to determine the final percent grade: 84 * .65 + 75 * .35 = 80.85
     Round the percent grade to the nearest integer: 81
-    Lookup the letter grade in the table above: C
+    /Lookup the letter grade in the table above: C
     Combine the percent grade and letter grade: "81 (C)"
 
 E:
@@ -77,18 +82,83 @@ let studentScores = {
   },
 };
 
-function generateClassRecordSummary(scores) {
-  // ...
+function generateClassRecordSummary(scores, numberOfExams = 4) {
+  return {
+    studentGrades: calculateStudentGrades(scores),
+    exams: processExamData(scores, numberOfExams),
+  };
 }
+
+function calculateStudentGrades(studentData) {
+  return Object.keys(studentData).map(student => {
+    const examAverage = mean(studentData[student].scores.exams);
+    const exerciseTotals = sum(studentData[student].scores.exercises);
+    const weightedScore = Math.round(applyWeights([examAverage, exerciseTotals]))
+
+    return `${weightedScore} (${selectGrade(weightedScore)})`
+  });
+}
+
+function processExamData(studentData, numberOfExams) {
+  return [...(' '.repeat(numberOfExams))].map((_, examIndex) => {
+    let currentMin = 100;
+    let currentMax = 0;
+    let allScores = [];
+
+    Object.keys(studentData).forEach(student => {  
+      const examScore = studentData[student].scores.exams[examIndex];
+
+      allScores.push(examScore);
+
+      currentMin = Math.min.apply(0, [currentMin, examScore]);
+      currentMax = Math.max.apply(0, [currentMax, examScore]);
+    });
+
+    return {
+      average: +(mean(allScores).toFixed(1)),
+      minimum: currentMin,
+      maximum: currentMax,
+    } 
+  });
+}
+
+function selectGrade(results) {
+  switch (true) {
+    case results > 92 :
+      return "A"
+    case results <= 92 && results > 84 :
+      return "B"
+    case results <= 84 && results > 76 :
+      return "C"
+    case results <= 76 && results > 68 :
+      return "D"
+    case results <= 68 && results > 59 :
+      return "E"
+    default: return "F"
+  }
+}
+
+function applyWeights(scoresArray, weightsArray = [0.65, 0.35]) {
+  return scoresArray.reduce( (totalScore, currentScore, index) => totalScore + weightsArray[index] * currentScore, 0)
+}
+
+function sum(array) {
+  return array.reduce((total, num) => total + num)
+}
+
+function mean(array) {
+  return sum(array) / array.length
+}
+
 console.log(generateClassRecordSummary(studentScores));
 
 // returns:
-{
-  studentGrades: [ '87 (B)', '73 (D)', '84 (C)', '86 (B)', '56 (F)' ],
-  exams: [
-    { average: 75.6, minimum: 50, maximum: 100 },
-    { average: 86.4, minimum: 70, maximum: 100 },
-    { average: 87.6, minimum: 60, maximum: 100 },
-    { average: 91.8, minimum: 80, maximum: 100 },
-  ],
-}
+// {
+//   studentGrades: [ '87 (B)', '73 (D)', '84 (C)', '86 (B)', '56 (F)' ],
+//   exams: [
+//     { average: 75.6, minimum: 50, maximum: 100 },
+//     { average: 86.4, minimum: 70, maximum: 100 },
+//     { average: 87.6, minimum: 60, maximum: 100 },
+//     { average: 91.8, minimum: 80, maximum: 100 },
+//   ],
+// }
