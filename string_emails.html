@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js">
+<!--<![endif]-->
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title></title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="">
+</head>
+
+<body>
+  <!--[if lt IE 7]>
+      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+
+  <script src="//dbdwvr6p7sskw.cloudfront.net/210/files/email_data_v2.js"></script>
+  <script>
+    const EMAIL_DELIMITER = "##||##";
+    const SECTION_DELIMITER = "#/#";
+
+    function mailCount(emailData) {
+      let emails = emailData.split(EMAIL_DELIMITER);
+      let emailObjects = parseEmailData(emails)
+
+      let minDate = findMinDate(emailObjects);
+      let maxDate = findMaxDate(emailObjects);
+
+      console.log("Count of Email: " + emails.length)
+      console.log("Date Range: " + minDate.toString() + " - " + maxDate.toString())
+    }
+
+    mailCount(emailData);
+
+    // console output
+
+    // Count of Email: 5
+    // Date Range: Sat Jun 25 2016 - Thu Aug 11 2016
+    function findMinDate(emailObject) {
+      let currentMin = Infinity;
+      Object.keys(emailObject).forEach( email => {
+        currentMin = Math.min(currentMin, Date.parse(emailObject[email]['Date']));
+      });
+      console.log(currentMin);
+      return new Date(currentMin);
+    }
+    function findMaxDate(emailObject) {
+      let currentMax = 0;
+      Object.keys(emailObject).forEach( email => {
+        currentMax = Math.max(currentMax, Date.parse(emailObject[email]['Date']));
+      });
+      return new Date(currentMax);
+    }
+    function parseEmailData(emails) {
+      let fieldSplitter = /(?<=[a-z]+: )/i;
+      return emails
+        .map(email =>
+          email
+            .replace(/\r?\n|\r/g, '')
+            .split(SECTION_DELIMITER))
+        .reduce((emailsArr, email) => {
+          return emailsArr.concat(
+            email.reduce((emailObj, field, idx) => {
+              return {
+                ...emailObj,
+                [idx !=4 ? field.split(fieldSplitter)[0].slice(0, -2) : 'Body']: field.split(fieldSplitter).slice(-1)[0]
+              }
+            }, {})
+          )
+        }, [])
+    }
+  </script>
+</body>
+
+</html>
