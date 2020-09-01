@@ -78,17 +78,16 @@ let longText = 'Four score and seven years ago our fathers brought forth' +
 function longestSentence(text) {
     let sentenceRegex = /(?:(?:[^ \.!?]+)[ ]?)*?[\.!?]/g;
     // (?:                    a non-captured group
-       //(?:                    a nested non-captured group
-         //[^ \.!?]                matching any characters not in the set .!?
-         //        +               one or more times
-                    //)         end nested group
-    // [ ]?                  followed by an optional space
-    // )                      end group
-     //*                     match 0 or more times, 
-     //?                     matching lazily, 
-    // [ ]?                followed by an optional space
-    // [\.!?]              followed by one of the characters in the set .!?
-    // g                   match globally
+    //   (?:                    a nested non-captured group
+    //      [^ \.!?]                matching any characters not in the set .!?
+    //              +               one or more times
+    //   )                      end nested group
+    //    [ ]?                followed by an optional space
+    //  )                     end group
+    //   *                    matching 0 or more times,
+    //    ?                   matching lazily, 
+    //     [\.!?]           followed by one of the characters in the set .!?
+    // g                  match globally
 
     let allSentences = text.match(sentenceRegex);
     let allSentenceLengths = allSentences.map(sentence => sentence.split` `.length);
