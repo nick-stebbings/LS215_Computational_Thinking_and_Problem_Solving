@@ -36,7 +36,9 @@ let studentScores = {
   },
 };
 
-// I made the choice to make the number of exams flexible, in case the functions were to be re-used in other contexts. This came at the cost of another variable since the only other alternative was to tightly couple the number of objects in the 'exams' property's array with the values in the input data: it is currently the only way of knowing, by looking at how many exams each student took in this data. Then what happens if a certain student missed an exam?)
+// I made the choice to make the number of exams flexible, in case the functions were to be re-used in other contexts. This came at the cost of another variable since the only 
+// other alternative was to tightly couple the number of objects in the 'exams' property's array with the values in the input data: it is currently the only way of knowing,
+// by looking at how many exams each student took in this data. Then what happens if a certain student missed an exam?)
 
 function generateClassRecordSummary(scores, numberOfExams = 4) {
   return {
