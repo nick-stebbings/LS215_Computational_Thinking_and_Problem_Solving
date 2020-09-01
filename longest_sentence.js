@@ -76,9 +76,8 @@ let longText = 'Four score and seven years ago our fathers brought forth' +
   ' here have thus far so nobly advanced.';
 
 function longestSentence(text) {
-    let sentenceRegex = /[ ]?(?:(?:[^ \.!?]+)[ ]?)*?[\.!?]/g;
-    // [ ]?                   an optional space
-    // (?:                    followed by a non-captured group
+    let sentenceRegex = /(?:(?:[^ \.!?]+)[ ]?)*?[\.!?]/g;
+    // (?:                    a non-captured group
        //(?:                    a nested non-captured group
          //[^ \.!?]                matching any characters not in the set .!?
          //        +               one or more times
@@ -92,14 +91,14 @@ function longestSentence(text) {
     // g                   match globally
 
     let allSentences = text.match(sentenceRegex);
-    let allSentenceLengths = allSentences.map(
-      (sentence) => sentence.length
-    );
-    let longestLengthIndex = allSentenceLengths.indexOf(
-      Math.max(...allSentenceLengths)
-    );
-    console.log(allSentences[longestLengthIndex]);
-  }
+    let allSentenceLengths = allSentences.map(sentence => sentence.split` `.length);
+
+    let longestLength = Math.max(...allSentenceLengths);
+    let longestLengthIndex = allSentenceLengths.indexOf(longestLength);
+    
+    console.log(allSentences[longestLengthIndex] + "\n");
+    console.log(`The longest sentence has ${longestLength} words.` + "\n");
+}
 
 longestSentence(longText);
 
