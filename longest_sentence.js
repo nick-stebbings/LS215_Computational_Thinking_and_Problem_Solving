@@ -15,16 +15,12 @@ Sentences
 
  Explicit: case sensitive, retain punctuation, retain spacing
 
-E:
-
 D:
   Input = string
   Output = log a string
 
 A:
    - Split up into sentences using a regex
-     -
-
    - Log the one that has greatest length
 */
 
@@ -94,7 +90,7 @@ function longestSentence(text) {
     // [ ]?                followed by an optional space
     // [\.!?]              followed by one of the characters in the set .!?
     // g                   match globally
-    
+
     let allSentences = text.match(sentenceRegex);
     let allSentenceLengths = allSentences.map(
       (sentence) => sentence.length
